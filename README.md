@@ -49,7 +49,7 @@ ChatClient
 
 ### Prérequis
 - Java JDK 8 ou supérieur
-- 3 terminaux disponibles
+- Minimum 3 terminaux disponibles
 
 ### Compilation
 ```bash
