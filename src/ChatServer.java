@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class ChatServer {
 
-    private static final int PORT = 12345;
+    private static final int PORT = 12354;
     private static final Set<ClientHandler> clients = Collections.synchronizedSet(new HashSet<>());
 
     public static void main(String[] args) {
@@ -16,31 +16,29 @@ public class ChatServer {
 
         try(ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (true) {
-                Socket clientSocket =  serverSocket.accept();
+                Socket clientSocket = serverSocket.accept();
                 System.out.println("New Client Connected: " + clientSocket.getInetAddress());
-
                 ClientHandler clientHandler = new ClientHandler(clientSocket);
                 clients.add(clientHandler);
-
                 new Thread(clientHandler).start();
-
             }
         } catch (IOException e) {
             System.out.println("Server error: " + e.getMessage());
         }
     }
 
-    public static void broadcast(String message, ClientHandler clientHandler) {
-
+    public static void broadcast(String message, ClientHandler sender) {
         synchronized (clients) {
             for (ClientHandler client : clients) {
-                client.sendMessage(message);
+                if (client != sender) {
+                    client.sendMessage(message);
+                }
             }
         }
     }
 
     public static void removeClient(ClientHandler clientHandler) {
-        clientHandler.removeClient(clientHandler);
+        clients.remove(clientHandler);
     }
 
 }
